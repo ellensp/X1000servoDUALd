@@ -185,6 +185,7 @@ void calculate_SCARA_forward_Transform(float f_scara[3]);
 #endif
 void prepare_move();
 void kill();
+void pause();
 void Stop();
 
 bool IsStopped();

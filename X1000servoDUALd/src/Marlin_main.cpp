@@ -499,6 +499,14 @@ void setup_killpin()
   #endif
 }
 
+void setup_pausepin()
+{
+  #if defined(PAUSE_PIN) && PAUSE_PIN > -1
+    pinMode(PAUSE_PIN,INPUT);
+    WRITE(PAUSE_PIN,HIGH);
+  #endif
+}
+
 void setup_photpin()
 {
   #if defined(PHOTOGRAPH_PIN) && PHOTOGRAPH_PIN > -1
@@ -569,6 +577,7 @@ void servo_init()
 void setup()
 {
   setup_killpin();
+  setup_pausepin();
   setup_powerhold();
   MYSERIAL.begin(BAUDRATE);
   SERIAL_PROTOCOLLNPGM("start");
@@ -4646,6 +4655,10 @@ void manage_inactivity()
     if( 0 == READ(KILL_PIN) )
       kill();
   #endif
+  #if defined(PAUSE_PIN) && PAUSE_PIN > -1
+    if( 0 == READ(PAUSE_PIN) )
+    pause();
+  #endif
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     controllerFan(); //Check if fan should be turned on to cool stepper drivers down
   #endif
@@ -4821,3 +4834,9 @@ bool setTargetedHotend(int code){
   return false;
 }
 
+void pause(){
+  enquecommand("M600");
+  enquecommand("G4 P0");
+  enquecommand("G4 P0");
+  enquecommand("G4 P0");
+}
